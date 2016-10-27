@@ -9,9 +9,9 @@ from elasticsearch import Elasticsearch, RequestsHttpConnection
 from django.contrib.staticfiles.storage import staticfiles_storage
 
 #Setup AWS
-AWSElasticPath = "NodePath"
-AWSAccessKey = "AccessKey"
-AWSSecretKey = "SecretKey"
+AWSElasticPath = "search-vgtweetmap-uxatwgtlkma5bxgfyn7fdlza2y.us-west-2.es.amazonaws.com"
+AWSAccessKey = "AKIAJEJEZLEJMKV2FOBQ"
+AWSSecretKey = "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"
 AWSRegion = "us-west-2"
 
 awsAuthentication = AWS4Auth(AWSAccessKey, AWSSecretKey, AWSRegion, "es")

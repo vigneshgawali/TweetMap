@@ -19,8 +19,7 @@ from CoreApp.views import home, map, keywordSelect, geoSpatialSearch
 
 urlpatterns = [
 
-    url(r'^$', home),
-    url(r'^map/keywordSelect', keywordSelect, name='keywordSelect'),
-    url(r'^map/', map),
+    url(r'^$', map),
+    url(r'^keywordSelect', keywordSelect, name='keywordSelect'),
     url(r'^admin/', admin.site.urls),
 ]
