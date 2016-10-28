@@ -24,43 +24,43 @@ print("######### Elastic initialized ######")
 
 #es = Elasticsearch()
 
-es.delete_by_query(index='newtweet',doc_type='tweet', body={"query": {"match_all": {}}})
-print("Records deleted")
-
-file = open('tweetfile10k.json','r')
-count = 0
-result = {}
-for line in file:
-    tweet = json.loads(line)
-
-    tweetText = tweet["text"]
-    user_name = tweet["user"]["name"]
-    screen_name = tweet["user"]["screen_name"]
-    profile_pic = tweet["user"]["profile_image_url"].replace("normal","bigger")
-    link = "www.twitter.com/" + screen_name + "/status/" + str(tweet["id"])
-    coordinates = tweet["coordinates"]["coordinates"]
-
-    geo_json_feature = {"geometry": {"type": "Point", "coordinates": coordinates},
-                        "properties": {"username": user_name, "screenname": screen_name, "text": tweetText,
-                                       "link": link, "profile_img": profile_pic}}
-
-    result = es.index(index='elastictweet', doc_type='tweet', id=tweet["id"], body=geo_json_feature)
-    count+=1
-    if count %100 == 0:
-        print(count)
-        if(count == 10000):
-            break
-
-# keyword = ''
-# if keyword is None or  keyword == '':
-#     res = es.search(index="elastictweet", body={"size": 10000, "query":{"match_all":{}}})
-# else:
-#     query = {"query_string": {"query": keyword } }
-#     res = es.search(index="elastictweet", body={"size": 10000, "query": query})
+# es.delete_by_query(index='elasticindex',doc_type='tweet', body={"query": {"match_all": {}}})
+# print("Records deleted")
 #
+# file = open('tweetfile10k.json','r')
+# count = 0
+# result = {}
+# for line in file:
+#     tweet = json.loads(line)
 #
-# print(len(res['hits']['hits']))
-# for hit in res['hits']['hits']:
-#     print(hit['_source'])
+#     tweetText = tweet["text"]
+#     user_name = tweet["user"]["name"]
+#     screen_name = tweet["user"]["screen_name"]
+#     profile_pic = tweet["user"]["profile_image_url"].replace("normal","bigger")
+#     link = "www.twitter.com/" + screen_name + "/status/" + str(tweet["id"])
+#     coordinates = tweet["coordinates"]["coordinates"]
+#
+#     geo_json_feature = {"geometry": {"type": "Point", "coordinates": coordinates},
+#                         "properties": {"username": user_name, "screenname": screen_name, "text": tweetText,
+#                                        "link": link, "profile_img": profile_pic}}
+#
+#     result = es.index(index='elasticindex', doc_type='tweet', id=tweet["id"], body=geo_json_feature)
+#     count+=1
+#     if count %100 == 0:
+#         print(count)
+#         if(count == 3000):
+#             break
+
+keyword = ''
+if keyword is None or  keyword == '':
+    res = es.search(index="elasticindex", body={"size": 10000, "query":{"match_all":{}}})
+else:
+    query = {"query_string": {"query": keyword } }
+    res = es.search(index="elasticindex", body={"size": 10000, "query": query})
+
+
+print(len(res['hits']['hits']))
+for hit in res['hits']['hits']:
+    print(hit['_source'])
 
 print("Done!!")
