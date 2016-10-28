@@ -9,9 +9,9 @@ from elasticsearch import Elasticsearch, RequestsHttpConnection
 from django.contrib.staticfiles.storage import staticfiles_storage
 
 #Setup AWS
-AWSElasticPath = "search-vgtweetmap-uxatwgtlkma5bxgfyn7fdlza2y.us-west-2.es.amazonaws.com"
-AWSAccessKey = "AKIAJEJEZLEJMKV2FOBQ"
-AWSSecretKey = "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"
+AWSElasticPath = "ElasticPath"
+AWSAccessKey = "AccessKey"
+AWSSecretKey = "Secret"
 AWSRegion = "us-west-2"
 
 awsAuthentication = AWS4Auth(AWSAccessKey, AWSSecretKey, AWSRegion, "es")
@@ -34,10 +34,11 @@ def home(request):
 
 def map(request):
     print("Enter map again")
-    geoJsonString = open(os.path.join(settings.STATICFILES_DIRS[0], 'sampleGeoJsonTweet500.json'), 'r').read()
-    geoJsonData = json.dumps(geoJsonString)
+    #geoJsonString = open(os.path.join(settings.STATICFILES_DIRS[0], 'sampleGeoJsonTweet500.json'), 'r').read()
+    #geoJsonData = json.dumps(geoJsonString)
 
-    return render(request, "CoreApp/home.html", {'jsonTweets':geoJsonData});
+    #return render(request, "CoreApp/home.html", {'jsonTweets':geoJsonData});
+    return render(request, "CoreApp/home.html")
 
 
 @require_GET
@@ -56,7 +57,7 @@ def keywordSelect(request):
     else:
         elasticQuery = {"query_string": {"query": searchKeyword.lower() } }
 
-    searchResult = elasticSearch.search(index="elastictweet", body={"size": 10000, "query": elasticQuery})
+    searchResult = elasticSearch.search(index="elastictweet", body={"size": 2000, "query": elasticQuery})
 
     try:
         for entry in searchResult['hits']['hits']:
