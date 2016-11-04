@@ -21,5 +21,6 @@ urlpatterns = [
 
     url(r'^$', map),
     url(r'^keywordSelect', keywordSelect, name='keywordSelect'),
+    url(r'^geoSpatialSearch', geoSpatialSearch, name='geoSpatialSearch'),
     url(r'^admin/', admin.site.urls),
 ]

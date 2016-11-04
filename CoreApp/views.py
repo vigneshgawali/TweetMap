@@ -9,9 +9,9 @@ from elasticsearch import Elasticsearch, RequestsHttpConnection
 from django.contrib.staticfiles.storage import staticfiles_storage
 
 #Setup AWS
-AWSElasticPath = "ElasticPath"
-AWSAccessKey = "AccessKey"
-AWSSecretKey = "Secret"
+AWSElasticPath = "ElasticSearch Node Path"
+AWSAccessKey = "Access_Key"
+AWSSecretKey = "Secret_Key"
 AWSRegion = "us-west-2"
 
 awsAuthentication = AWS4Auth(AWSAccessKey, AWSSecretKey, AWSRegion, "es")
@@ -33,11 +33,6 @@ def home(request):
     return render(request, "CoreApp/index.html");
 
 def map(request):
-    print("Enter map again")
-    #geoJsonString = open(os.path.join(settings.STATICFILES_DIRS[0], 'sampleGeoJsonTweet500.json'), 'r').read()
-    #geoJsonData = json.dumps(geoJsonString)
-
-    #return render(request, "CoreApp/home.html", {'jsonTweets':geoJsonData});
     return render(request, "CoreApp/home.html")
 
 
@@ -57,18 +52,21 @@ def keywordSelect(request):
     else:
         elasticQuery = {"query_string": {"query": searchKeyword.lower() } }
 
-    searchResult = elasticSearch.search(index="elastictweet", body={"size": 2000, "query": elasticQuery})
+    #searchResult = elasticSearch.search(index="elasticindex", body={"size": 3000, "query": elasticQuery})
+    searchResult = elasticSearch.search(index="elasticgeo", body={"size": 3000, "query": elasticQuery})
 
     try:
         for entry in searchResult['hits']['hits']:
             result = entry['_source']
-            result_data['features'].append(result)
+            if 'query' not in str(result):
+                result_data['features'].append(result)
 
     except KeyError:
         print("No Results found")
 
     print(len(result_data['features']))
     return HttpResponse(json.dumps(result_data), content_type="application/json")
+
 
 @require_GET
 def geoSpatialSearch(request):
@@ -80,27 +78,27 @@ def geoSpatialSearch(request):
     }
 
     elasticQuery = {
-        "filtered":{
-            "query":{
-                "match_all": {}
+        "bool" : {
+            "must" : {
+                "match_all" : {}
             },
-            "filter":{
-                "geo_distance": {
-                "distance": "100miles",
-                "geometry": {
-                    "coordinates":[request.GET['lat'],request.GET['lng']]
-                },
+            "filter" : {
+                "geo_distance" : {
+                    "distance" : "1000km",
+                    "geometry.coordinates" : [float(request.GET['lng']),float(request.GET['lat'])]
                 }
             }
         }
     }
 
-    searchResult = elasticSearch.search(index="newtweet", body={"size": 10000, "query": elasticQuery})
+    print(request.GET['lat']+" "+request.GET['lng'])
+
+    searchResult = elasticSearch.search(index="elasticgeo", body={"size": 10000, "query": elasticQuery})
 
     try:
         for entry in searchResult['hits']['hits']:
             result = entry['_source']
-            if result is not None:
+            if result is not None and 'query' not in str(result):
                 result_data['features'].append(result)
 
     except KeyError:

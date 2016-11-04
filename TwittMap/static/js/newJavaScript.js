@@ -644,7 +644,7 @@ function placeMarker(tweet){
                                 '</a>' +
                             '</div>' +
                             '<div class="iw-content">' +
-                                '<img src="' + profile_pic + '" onerror="imgError(this);">' +
+                                '<img src="' + profile_pic + '" onError="this.onerror=null;this.src=imgPath;">' +
                                 '<p>' + text + '</p>' +
                             '</div>' +
                         '</div>';
@@ -705,7 +705,7 @@ function addTweetSidebar(tweet){
     var profile_pic = tweet.properties.profile_img;
 
     var tweetContent = '<blockquote class="twitter-tweet">' +
-                            '<img src="' + profile_pic + '">' +
+                            '<img src="' + profile_pic + '" onError="this.onerror=null;this.src=imgPath;">' +
                             '<a href="' + link + '">' +
                                 '<h5>' + username + ' (@' + screen_name + ')' + '</h5>' +
                             '</a>' +
@@ -726,26 +726,26 @@ function keywordSelect(queryKey) {
     });
 }
 
-function geoSpatialSearch(event)
-{
+function geoSpatialSearch(event) {
+
     coordinates = {
         "lat": event.latLng.lat(),
         "lng": event.latLng.lng()
     };
 
+    console.log("GeoSpatialClick: "+coordinates.lat+" "+coordinates.lng);
+
     $.getJSON("geoSpatialSearch", coordinates)
     .done(function(data){
+        removeMarkers();
+        mapOptions.zoom = 7;
+        mapOptions.center = new google.maps.LatLng(coordinates.lat, coordinates.lng);
+        map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
         drawMarkers(data);
     })
     .fail(function(error){
         console.log(error);
     });
-}
-
-function imgError(image) {
-    image.onerror = "";
-    //image.src = "img/blank.jpg";
-    return true;
 }
 
 function removeMarkers(){
@@ -759,12 +759,25 @@ function getValue(value){
     currentKeyword = value.text;
     $('.dropdown-menu').parents('.input-group-btn').find('.dropdown-toggle').html(value.text + ' <span class="caret"></span>');
     console.log("DropDown select " + currentKeyword);
+    $('#searchText').val('');
+    removeMarkers();
+    keywordSelect(currentKeyword);
+    map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
+}
+
+function tweetSearch(){
+    currentKeyword = $('#searchText').val();
+    console.log("Search box used: "+currentKeyword);
+    $('.dropdown-menu').parents('.input-group-btn').find('.dropdown-toggle').html('All <span class="caret"></span>');
     removeMarkers();
     keywordSelect(currentKeyword);
     map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
 }
 
 window.setInterval(function(){
+    if($('#searchText').val() == ''){
+        currentKeyword = "All";
+    }
     removeMarkers();
     keywordSelect(currentKeyword);
 }, 30000);

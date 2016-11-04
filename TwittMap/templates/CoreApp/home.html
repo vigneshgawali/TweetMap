@@ -19,6 +19,16 @@
 			<script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
 		<![endif]-->
 
+        <script> var imgPath = "{% static 'img/blank.jpg'%}"</script>
+        <script src="{% static 'js/jquery.min.js' %}"></script>
+        <script src="{% static 'js/bootstrap.min.js' %}"></script>
+
+        <script src="{% static 'js/newJavaScript.js'%}"></script>
+        <script src="{% static 'js/markerclusterer.js' %}"></script>
+        <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+        <script async defer src="http://maps.googleapis.com/maps/api/js?key=AIzaSyDCIwpffw6k2PtegQOiwRmFEnH0pS5Brzw&extension=.js&output=embed&libraries=visualization&callback=init"></script>
+
+
 	</head>
 	<body>
     <!-- begin template -->
@@ -48,8 +58,17 @@
                                     <li><a href="#" onclick="getValue(this)">2016</a></li>
                                 </ul>
                             </div>
+                            <div class="col-lg-4">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="searchText" placeholder="Search for..." onKeyDown="if(event.keyCode==13) tweetSearch();">
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-secondary" type="button" id="searchBtn" onclick="tweetSearch()">Go!</button>
+                                  </span>
+                                </div>
+                            </div>
                         </div>
                     </div>
+
                 </form>
             </div>
         </div>
@@ -69,16 +88,5 @@
     </body>
 
     {#    LINK JS FILES    #}
-        <script>
-            console.log("Checking imgs");
-            var staticURL ="{% static 'img/'%}"
-        </script>
-        <script src="{% static 'js/jquery.min.js' %}"></script>
-        <script src="{% static 'js/bootstrap.min.js' %}"></script>
-
-        <script src="{% static 'js/newJavaScript.js'%}"></script>
-        <script src="{% static 'js/markerclusterer.js' %}"></script>
-        <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
-        <script async defer src="http://maps.googleapis.com/maps/api/js?key=AIzaSyDCIwpffw6k2PtegQOiwRmFEnH0pS5Brzw&extension=.js&output=embed&libraries=visualization&callback=init"></script>
 
 </html>
